@@ -4,6 +4,53 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+define('FACEBOOK_OAUTH_CALLBACK', site_url() . "/moatall-wsl-callback/?social_type=facebook");
+
+add_action('wp_head', 'moatall_wsl_facebook_login');
+add_action('admin_head', 'moatall_wsl_facebook_login');
+add_action('login_head', 'moatall_wsl_facebook_login');
+function moatall_wsl_facebook_login() {
+	$setting_data = get_option('moatall_wsl_plugin_setting_data');
+	if ( empty($setting_data) || empty($setting_data['facebook_details']) ) {
+		return;
+	}
+	extract($setting_data['facebook_details']);
+?>
+<script>
+	logInWithFacebook = function() {
+		FB.login(function(response) {
+			if (response.authResponse) {
+				alert('You are logged in & cookie set!');
+				FB.api('/me?fields=email,name', function(response) {
+					alert(response.name + ", " + response.email);
+				});
+				location.href = "<?php echo FACEBOOK_OAUTH_CALLBACK; ?>";
+			} else {
+				alert('User cancelled login or did not fully authorize.');
+			}
+		}, {scope: 'email,public_profile'});
+		return false;
+	};
+
+	window.fbAsyncInit = function() {
+		FB.init({
+			appId: '<?php echo $facebook_id; ?>',
+			cookie: true,
+			version: 'v2.11'
+		});
+	};
+
+	(function(d, s, id){
+		var js, fjs = d.getElementsByTagName(s)[0];
+		if (d.getElementById(id)) {return;}
+		js = d.createElement(s); js.id = id;
+		js.src = "https://connect.facebook.net/ja_JP/sdk.js";
+		fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));
+</script>
+<?php
+}
+
 function moatall_wsl_facebook() {
 	$setting_data = get_option('moatall_wsl_plugin_setting_data');
 	if ( empty($setting_data) || empty($setting_data['facebook_details']) ) {
@@ -40,7 +87,7 @@ function wsl_facebook_callback() {
 		exit;
 	}
 
-	$helper = $fb->getRedirectLoginHelper();
+	$helper = $fb->getJavaScriptHelper();
 	try {
 		$accessToken = $helper->getAccessToken();
 	} catch(Facebook\Exceptions\FacebookResponseException $e) {
@@ -52,16 +99,8 @@ function wsl_facebook_callback() {
 	}
 
 	if ( !isset($accessToken) ) {
-		if ($helper->getError()) {
-			header('HTTP/1.0 401 Unauthorized');
-			echo "Error: " . $helper->getError() . "\n";
-			echo "Error Code: " . $helper->getErrorCode() . "\n";
-			echo "Error Reason: " . $helper->getErrorReason() . "\n";
-			echo "Error Description: " . $helper->getErrorDescription() . "\n";
-		} else {
-			header('HTTP/1.0 400 Bad Request');
-			echo 'Bad request';
-		}
+		header('HTTP/1.0 401 Unauthorized');
+		echo "Can't get access token.";
 		exit;
 	}
 
@@ -81,7 +120,8 @@ function wsl_facebook_callback() {
 		$url = site_url() . "/my-account/";
 		header("Location: {$url}");
 	} else {
-		echo "Can't get user's email.</ br>";
+		echo "Fatal error: This application can't get email address from facebook API.";
+		echo "Tell this error to the site owner.";
 		exit;
 	}
 }

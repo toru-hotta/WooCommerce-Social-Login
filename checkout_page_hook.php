@@ -21,7 +21,7 @@ function moatall_wsl_add_checkout_notice() {
 			<p class="form-row form-row-first login-checkout">
 				<?php if($enable_facebook=='on'){ ?>
 				<p class="facebook-social-button social-login-button">
-					<a href="<?php echo moatall_wsl_facebook_login_url() ?>">Sign in with Facebook</a>
+					<a href="#" onClick="logInWithFacebook()">Sign in with Facebook</a>
 				</p>
 				
 				<?php } if($enable_google_plus=='on'){ ?>
@@ -44,5 +44,4 @@ function moatall_wsl_add_checkout_notice() {
 		}
 	}
 }
-wp_enqueue_script("checkout-js", plugin_dir_url( __FILE__ )."js/checkout.js",array('jquery'),'',true);
 ?>

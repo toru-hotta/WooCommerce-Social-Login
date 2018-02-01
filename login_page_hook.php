@@ -27,7 +27,7 @@ function moatall_wsl_login_form_add() {
 <div class='login-hook'>
 	<?php if($enable_facebook=='on'){ ?>
 	<p class="facebook-social-button social-login-button">
-		<a href="<?php echo moatall_wsl_facebook_login_url() ?>">Sign in with Facebook</a>
+		<a href="#" onClick="logInWithFacebook()">Sign in with Facebook</a>
 	</p>
 	
 	<?php } if($enable_google_plus=='on'){ ?>

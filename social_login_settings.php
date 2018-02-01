@@ -284,8 +284,6 @@ $twitter_count = (get_option('moatall_wsl_twitter_count') != '') ? get_option('m
 </style>
 
 <?php
-	wp_enqueue_script("checkout-js", plugin_dir_url( __FILE__ )."js/checkout.js",array('jquery'),'',true);
-	wp_enqueue_script("addmedia-js", plugin_dir_url( __FILE__ )."js/media_upload.js",array('jquery'),'',true);
 	if(!empty($_POST) && isset($_POST['save_data'])) {
 		if ( check_admin_referer( 'all_social_setting_action', 'social_setting_form_nonce_field' ) ) {
 			$social_setting=array(
