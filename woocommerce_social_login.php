@@ -1,13 +1,13 @@
 <?php
 /**
 * Plugin Name: WooCommerce Social Login - Moatall
-* Plugin URI: https://github.com/toru1055
+* Plugin URI: https://github.com/toru-hotta/WooCommerce-Social-Login
 * Description: Social Login plugin for WooCommerce.
 * Version: 1.2.0
-* Author: toru1055
+* Author: toru-hotta
 * Text Domain: moatall_social_login
 * Domain Path: /languages
-* Author URI: https://github.com/toru1055
+* Author URI: https://github.com/toru-hotta
 * License: GPLv2 or later
 * License URI: http://www.gnu.org/licenses/gpl-2.0.html
 **/

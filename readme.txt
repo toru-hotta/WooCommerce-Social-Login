@@ -1,6 +1,6 @@
 === WooCommerce Social Login - Moatall ===
-Contributors: toru1055
-Tags: WooCommerce Social Login, toru1055, Moatall, woocommerce, woocommerce plugins, ecommerce, social login, login, social provider, social authentication, authentication, connect with social, woocommerce connect, facebook, google, yahoo, register, social networks.
+Contributors: toru-hotta
+Tags: WooCommerce Social Login, toru-hotta, Moatall, woocommerce, woocommerce plugins, ecommerce, social login, login, social provider, social authentication, authentication, connect with social, woocommerce connect, facebook, google, yahoo, register, social networks.
 Requires at least: 4.0
 Tested up to: 4.9
 Stable tag: 1.2.0
