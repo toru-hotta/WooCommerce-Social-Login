@@ -7,6 +7,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+function get_random_state() {
+    return "state5a728889bd8a9";
+}
+
+function get_random_nonce() {
+    return "nonce5a728889bd91d";
+}
+
 add_action('wp_head', 'moatall_wsl_yahoojapan_login');
 add_action('admin_head', 'moatall_wsl_yahoojapan_login');
 add_action('login_head', 'moatall_wsl_yahoojapan_login');
@@ -18,10 +26,8 @@ function moatall_wsl_yahoojapan_login() {
 	extract($setting_data['yahoojapan_details']);
 
     // set random state & random nonce.
-    $random_state = uniqid("state");
-    $random_nonce = uniqid("nonce");
-    $_SESSION["YJ_RANDOM_STATE"] = $random_state;
-    $_SESSION["YJ_RANDOM_NONCE"] = $random_nonce;
+    $random_state = get_random_state();
+    $random_nonce = get_random_nonce();
 ?>
 
 <script type="text/javascript">
@@ -69,8 +75,8 @@ window.yconnectInit = function() {
 
 function wsl_yahoojapan_callback() {
     // get random state and random nonce
-    $random_state = $_SESSION["YJ_RANDOM_STATE"];
-    $random_nonce = $_SESSION["YJ_RANDOM_NONCE"];
+    $random_state = get_random_state();
+    $random_nonce = get_random_nonce();
 
     $setting_data = get_option('moatall_wsl_plugin_setting_data');
     if ( empty($setting_data) || empty($setting_data['yahoojapan_details']) ) {
