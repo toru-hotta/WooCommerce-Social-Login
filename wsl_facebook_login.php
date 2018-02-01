@@ -29,7 +29,7 @@ function moatall_wsl_facebook_login_url() {
 	}
 	$helper = $fb->getRedirectLoginHelper();
 	$permissions = ['email'];
-	$loginUrl = $helper->getLoginUrl(site_url() . "/moatall-wsl-callback?social_type=facebook", $permissions);
+	$loginUrl = $helper->getLoginUrl(site_url() . "/moatall-wsl-callback/?social_type=facebook", $permissions);
 	return htmlspecialchars($loginUrl);
 }
 
