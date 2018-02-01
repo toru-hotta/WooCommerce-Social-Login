@@ -116,10 +116,14 @@ function wsl_yahoojapan_callback() {
     try {
         $client->requestUserInfo( $access_token );
         $email = $client->getUserInfo()["email"];
-        moatall_wsl_data_recieve($email, $email, "yahoojapan");
-        $url = site_url() . "/my-account/";
-        header("Location: {$url}");
-        exit;
+        $is_logged_in = moatall_wsl_login_by_email($email, "yahoojapan");
+        if ( $is_logged_in ) {
+            $url = site_url() . "/my-account/";
+            header("Location: {$url}");
+            exit;
+        } else {
+            echo "Fail to login.";
+        }
     } catch ( ApiException $e ) {
         echo "Caught ApiException: " . $e->getMessage();
         exit;

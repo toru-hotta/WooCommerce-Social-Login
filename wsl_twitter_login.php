@@ -51,11 +51,17 @@ function wsl_twitter_callback() {
 		['tweet_mode' => 'extended', 'include_entities' => 'false', 'include_email'=> 'true']
 	);
 	if ( isset( $user->email ) ) {
-		moatall_wsl_data_recieve($user->email, $user->email, "twitter");
-		$url = site_url() . "/my-account/";
-		header("Location: {$url}");
+        $is_logged_in = moatall_wsl_login_by_email($user->email, "twitter");
+        if ( $is_logged_in ) {
+            $url = site_url() . "/my-account/";
+            header("Location: {$url}");
+            exit;
+        } else {
+            echo "Fail to login.";
+        }
 	} else {
-		echo "Error: This application can't get email from twitter API.</ br>";
+		echo "Fatal error: This application can't get email address from twitter API.";
+		echo "Tell this error to the site owner.";
 		exit;
 	}
 }

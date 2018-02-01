@@ -59,10 +59,13 @@ function wsl_google_callback() {
 	$id_token = $_POST["idtoken"];
 	$client = new Google_Client(['client_id' => $google_id]);
 	$payload = $client->verifyIdToken($id_token);
-	if ($payload) {
-		$userid = $payload['sub'];
-		moatall_wsl_data_recieve($payload['email'], $payload['email'], "google");
-		echo "success";
+	if ( $payload ) {
+		$is_logged_in = moatall_wsl_login_by_email( $payload['email'], "google" );
+		if ( $is_logged_in ) {
+			echo "success";
+		} else {
+			echo "failed";
+		}
 	} else {
 		echo "invalid id token";
 	}

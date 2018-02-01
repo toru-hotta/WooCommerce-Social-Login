@@ -116,9 +116,14 @@ function wsl_facebook_callback() {
 
 	$user = $response->getGraphUser();
 	if ( $user["email"] ) {
-		moatall_wsl_data_recieve($user["email"], $user["email"], "facebook");
-		$url = site_url() . "/my-account/";
-		header("Location: {$url}");
+        $is_logged_in = moatall_wsl_login_by_email($user["email"], "facebook");
+        if ( $is_logged_in ) {
+            $url = site_url() . "/my-account/";
+            header("Location: {$url}");
+            exit;
+        } else {
+            echo "Fail to login.";
+        }
 	} else {
 		echo "Fatal error: This application can't get email address from facebook API.";
 		echo "Tell this error to the site owner.";

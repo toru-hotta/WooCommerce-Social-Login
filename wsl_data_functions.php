@@ -4,71 +4,37 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-add_action('wp_head', 'wsl_data_send_script');
-add_action('admin_head', 'wsl_data_send_script');
-add_action('login_head', 'wsl_data_send_script');
-function wsl_data_send_script() {
-?>
-<script>
-	function wsl_data_send(profile_name, profile_email, social_type) {
-		var str =  profile_name;
-		str += "*" + profile_email;
-		str += "*" + social_type;
-		jQuery.post(
-			'<?php echo site_url(); ?>/wp-admin/admin-ajax.php',
-			{
-				'action': 'wsl_data_revieve',
-				'data': btoa(str) // We pass php values differently!
-			},
-			function ( response, status ) {
-				if(response=='success') {
-					<?php if( is_checkout() ): ?>
-					window.location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
-					<?php else: ?>
-					window.location.href = "<?php echo site_url();?>/my-account";
-					<?php endif; ?>
-				}
-			}
-		);
+function moatall_wsl_login_by_email( $profile_email, $social_type ) {
+	if ( !is_email( $profile_email ) || empty( $social_type ) ) {
+		echo "email is not email: " . $profile_email . "; OR ";
+		echo "social_type is empty: " . $social_type . "; ";
+		return false;
 	}
-</script>
-<?php
-}
-
-function moatall_wsl_data_recieve( $profile_name, $profile_email, $social_type ) {
-	if( !email_exists( $profile_email ) && username_exists( $profile_name ) ){
-		$profile_id   = rand(1000, 9999);
-		$profile_name = $profile_name.$profile_id;
-	}
-	$user_id = username_exists( $profile_name );
-	if ( !$user_id and email_exists($profile_email) == false ) {
+	// check if $profile_email has already existed in user.email
+	if ( !email_exists( $profile_email ) ) {
+		// create user account by $profile_email
+		$profile_name = $profile_email;
+		while ( username_exists( $profile_name ) ) {
+			$profile_name = $profile_email . '@' . rand(1000, 9999);
+		}
 		$random_password = wp_generate_password( $length=12, $include_standard_special_chars=false );
-		$user_idd = wp_create_user( $profile_name, $random_password, $profile_email );
-	}
-	if( isset($user_idd) ) {
-		$user1 = get_user_by('id',$user_idd);
-		wp_set_current_user( $user1->ID, $user1->user_login );
-		wp_set_auth_cookie( $user1->ID );
-		$user_info = get_userdata( $user1->ID );
-		do_action( 'wp_login', $user1->user_login, $user_info );
-		$to = $profile_email;
-		$sub = get_bloginfo( 'name' )." Details";
-		$msg = make_mail_message_body( $profile_name, $random_password );
-		$header = "MIME-Version: 1.0\r\n";
+		wp_create_user( $profile_name, $random_password, $profile_email );
+		
+		// send mail to $profile_email about created user account
+		$to      = $profile_email;
+		$sub     = get_bloginfo( 'name' )." Details";
+		$msg     = make_mail_message_body( $profile_name, $random_password );
+		$header  = "MIME-Version: 1.0\r\n";
 		$header .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
 		wp_mail($to, $sub, $msg, $header);
-		increment_counter( $social_type );
-		return true;
-	} else {
-		$user1 = get_user_by( 'email', $profile_email);
-		wp_set_current_user( $user1->ID, $user1->user_login );
-		wp_set_auth_cookie( $user1->ID );
-		$user_info = get_userdata( $user1->ID );
-		do_action( 'wp_login', $user1->user_login, $user_info );
-		increment_counter( $social_type );
-		return true;												 
 	}
-	return false;
+	$user1 = get_user_by( 'email', $profile_email );
+	wp_set_current_user( $user1->ID, $user1->user_login );
+	wp_set_auth_cookie( $user1->ID );
+	$user_info = get_userdata( $user1->ID );
+	do_action( 'wp_login', $user1->user_login, $user_info );
+	increment_counter( $social_type );
+	return true;
 }
 
 function increment_counter($social_type) {
